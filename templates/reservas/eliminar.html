@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Eliminar Reserva{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5 text-white">
+
+    <h2 class="mb-4 fw-bold text-white bg-danger px-3 py-2 rounded shadow-sm d-inline-block">
+        Eliminar Reserva
+    </h2>
+
+    <div class="card bg-dark text-white p-4 shadow-lg mt-3">
+        <p>¿Seguro que deseas eliminar la reserva de <b>{{ reserva.nombre_huesped }}</b>?</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger fw-bold">Sí, eliminar</button>
+            <a href="{% url 'reservas:listar' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

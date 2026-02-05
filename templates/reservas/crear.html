@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% block title %}Crear Reserva{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+
+    <!-- TÍTULO -->
+    <h2 class="mb-4 fw-bold text-dark bg-warning d-inline-block px-3 py-2 rounded shadow">
+        Crear Reserva
+    </h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" class="card bg-dark text-white p-4 shadow-lg rounded-4" novalidate>
+        {% csrf_token %}
+
+        <!-- ERRORES GENERALES -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <!-- NOMBRE -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Nombre del huésped</label>
+            <input type="text"
+                   name="nombre_huesped"
+                   class="form-control {% if form.nombre_huesped.errors %}is-invalid{% endif %}"
+                   value="{{ form.nombre_huesped.value|default_if_none:'' }}"
+                   placeholder="Ej: Juan Pérez"
+                   title="Escribe el nombre completo del huésped"
+                   required>
+            {% for error in form.nombre_huesped.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- DOCUMENTO -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Documento</label>
+            <input type="text"
+                   name="documento"
+                   class="form-control {% if form.documento.errors %}is-invalid{% endif %}"
+                   value="{{ form.documento.value|default_if_none:'' }}"
+                   placeholder="Ej: 1023456789 o Pasaporte"
+                   title="Cédula o pasaporte (si no tiene, se deja vacío)">
+            {% for error in form.documento.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- TELÉFONO -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Teléfono</label>
+            <input type="text"
+                   name="telefono"
+                   class="form-control {% if form.telefono.errors %}is-invalid{% endif %}"
+                   value="{{ form.telefono.value|default_if_none:'' }}"
+                   placeholder="Ej: 3001234567"
+                   title="Número de contacto del huésped"
+                   required>
+            {% for error in form.telefono.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- EMAIL -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Correo</label>
+            <input type="email"
+                   name="email"
+                   class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                   value="{{ form.email.value|default_if_none:'' }}"
+                   placeholder="Ej: correo@gmail.com"
+                   title="Correo (opcional)">
+            {% for error in form.email.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- FECHA ENTRADA -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Fecha de entrada</label>
+            <input type="date"
+                   name="fecha_entrada"
+                   class="form-control {% if form.fecha_entrada.errors %}is-invalid{% endif %}"
+                   value="{{ form.fecha_entrada.value|default_if_none:'' }}"
+                   title="Selecciona la fecha de ingreso"
+                   required>
+            {% for error in form.fecha_entrada.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- FECHA SALIDA -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Fecha de salida</label>
+            <input type="date"
+                   name="fecha_salida"
+                   class="form-control {% if form.fecha_salida.errors %}is-invalid{% endif %}"
+                   value="{{ form.fecha_salida.value|default_if_none:'' }}"
+                   title="Selecciona la fecha de salida (debe ser mayor a la entrada)"
+                   required>
+            {% for error in form.fecha_salida.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- ADULTOS -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Adultos</label>
+            <input type="number"
+                   name="adultos"
+                   class="form-control {% if form.adultos.errors %}is-invalid{% endif %}"
+                   value="{{ form.adultos.value|default_if_none:'1' }}"
+                   placeholder="Ej: 1"
+                   title="Cantidad de adultos (mínimo 1)"
+                   min="1"
+                   required>
+            {% for error in form.adultos.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- NIÑOS -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Niños</label>
+            <input type="number"
+                   name="ninos"
+                   class="form-control {% if form.ninos.errors %}is-invalid{% endif %}"
+                   value="{{ form.ninos.value|default_if_none:'0' }}"
+                   placeholder="Ej: 0"
+                   title="Cantidad de niños"
+                   min="0">
+            {% for error in form.ninos.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- TIPO HABITACIÓN -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Tipo de habitación</label>
+            {{ form.tipo_habitacion }}
+            {% for error in form.tipo_habitacion.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- HABITACIÓN -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Habitación</label>
+            <input type="text"
+                   name="habitacion"
+                   class="form-control {% if form.habitacion.errors %}is-invalid{% endif %}"
+                   value="{{ form.habitacion.value|default_if_none:'' }}"
+                   placeholder="Ej: 101, 305, A12"
+                   title="Número o código de habitación"
+                   required>
+            {% for error in form.habitacion.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- VEHÍCULO -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Vehículo</label>
+            {{ form.tipo_vehiculo }}
+            {% for error in form.tipo_vehiculo.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- PLACA -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Placa</label>
+            <input type="text"
+                   name="placa"
+                   class="form-control {% if form.placa.errors %}is-invalid{% endif %}"
+                   value="{{ form.placa.value|default_if_none:'' }}"
+                   placeholder="Ej: ABC123"
+                   title="Si trae vehículo, la placa es obligatoria">
+            {% for error in form.placa.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- COLOR VEHÍCULO -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Color vehículo</label>
+            <input type="text"
+                   name="color_vehiculo"
+                   class="form-control {% if form.color_vehiculo.errors %}is-invalid{% endif %}"
+                   value="{{ form.color_vehiculo.value|default_if_none:'' }}"
+                   placeholder="Ej: Negro"
+                   title="Color del vehículo (si aplica)">
+            {% for error in form.color_vehiculo.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- MÉTODO PAGO -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Método de pago</label>
+            {{ form.metodo_pago }}
+            {% for error in form.metodo_pago.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- TOTAL -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Total</label>
+            <input type="number"
+                   step="0.01"
+                   name="total"
+                   class="form-control {% if form.total.errors %}is-invalid{% endif %}"
+                   value="{{ form.total.value|default_if_none:'0' }}"
+                   placeholder="Ej: 150000"
+                   title="Valor total a pagar">
+            {% for error in form.total.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- OBSERVACIONES -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Observaciones</label>
+            <textarea name="observaciones"
+                      class="form-control {% if form.observaciones.errors %}is-invalid{% endif %}"
+                      rows="3"
+                      placeholder="Ej: Llegan tarde, cama adicional, etc."
+                      title="Notas extra">{{ form.observaciones.value|default_if_none:'' }}</textarea>
+            {% for error in form.observaciones.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- ESTADO -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Estado</label>
+            {{ form.estado }}
+            {% for error in form.estado.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-warning fw-bold mt-3 shadow">Guardar Reserva</button>
+        <a href="{% url 'reservas:listar' %}" class="btn btn-secondary mt-3 shadow">Volver</a>
+    </form>
+
+</div>
+{% endblock %}

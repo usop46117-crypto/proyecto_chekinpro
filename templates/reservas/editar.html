@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Editar Reserva{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+
+    <h2 class="mb-4 fw-bold text-dark bg-info d-inline-block px-3 py-2 rounded shadow">
+        Editar Reserva #{{ reserva.id }}
+    </h2>
+
+    <form method="POST" class="card bg-dark text-white p-4 shadow-lg rounded-4" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <!-- Reutilizamos el mismo template que crear (pegado manual) -->
+        {% include "reservas/partials/form_reserva.html" %}
+
+        <button type="submit" class="btn btn-info fw-bold mt-3 shadow">Actualizar</button>
+        <a href="{% url 'reservas:listar' %}" class="btn btn-secondary mt-3 shadow">Volver</a>
+    </form>
+
+</div>
+{% endblock %}

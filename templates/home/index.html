@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio | Chekin{% endblock %}
+
+{% block content %}
+<section class="hero d-flex align-items-center text-white"
+         style="min-height: 80vh;
+                background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                            url('{% static 'img/chekin.png' %}') no-repeat center;
+                background-size: contain;
+                padding-top: 100px;">
+    <div class="container text-center mt-5">
+        <h1 class="display-4 fw-bold mb-3">¡Bienvenido a Chekin!</h1>
+        <p class="lead mb-4">Sistema interno para la gestión segura y eficiente de reservas hoteleras.</p>
+        <p class="fst-italic">Solo usuarios internos: recepcionistas y administradores.</p>
+    </div>
+</section>
+{% endblock %}
+
+
+
+

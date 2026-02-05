@@ -1,0 +1,54 @@
+/* RESET BÁSICO */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* BODY */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #ffffff;
+}
+
+/* HERO */
+.hero {
+    min-height: calc(100vh - 72px); /* resta altura del header */
+    display: flex;
+    align-items: center;
+
+    background:
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url("../img/chekinpro.png") center / cover no-repeat;
+}
+
+/* TEXTO HERO */
+.hero h1 {
+    letter-spacing: 1px;
+}
+
+.hero p {
+    max-width: 700px;
+    margin-inline: auto;
+}
+
+/* HEADER */
+header {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+}
+
+/* FOOTER */
+footer {
+    background-color: #111;
+    color: #bbb;
+    font-size: 0.85rem;
+}
+
+/* BOTONES */
+.btn-warning {
+    font-weight: 600;
+}
+
+/* LINKS */
+a {
+    text-decoration: none;
+}

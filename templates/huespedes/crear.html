@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Crear Huésped{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h2 class="mb-3">Nuevo Huésped</h2>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'lista_huespedes' %}" class="btn btn-secondary">Volver</a>
+                    <button type="submit" class="btn btn-green">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

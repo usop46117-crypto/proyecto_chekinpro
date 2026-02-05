@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Eliminar{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card p-4 text-center">
+            <h2>¿Eliminar huésped?</h2>
+            <p class="mb-4">
+                Estás a punto de eliminar a <strong>{{ huesped }}</strong>
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <a href="{% url 'lista_huespedes' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
