@@ -1,54 +1,31 @@
-/* RESET BÁSICO */
-html, body {
-    height: 100%;
-    margin: 0;
+/* ===== FONDO HOTEL (COMO LA IMAGEN) ===== */
+.base-bg {
+    background-image: url("../img/hotel.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
-/* BODY */
-body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background-color: #ffffff;
+/* Capa azul suave como la referencia */
+.base-bg::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 80, 160, 0.35);
+    z-index: -1;
 }
 
-/* HERO */
-.hero {
-    min-height: calc(100vh - 72px); /* resta altura del header */
-    display: flex;
-    align-items: center;
-
-    background:
-        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-        url("../img/chekinpro.png") center / cover no-repeat;
-}
-
-/* TEXTO HERO */
-.hero h1 {
-    letter-spacing: 1px;
-}
-
-.hero p {
-    max-width: 700px;
-    margin-inline: auto;
-}
-
-/* HEADER */
-header {
-    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
-}
-
-/* FOOTER */
+/* Todo el contenido encima del fondo */
+header,
+main,
 footer {
-    background-color: #111;
-    color: #bbb;
-    font-size: 0.85rem;
+    position: relative;
+    z-index: 2;
 }
 
-/* BOTONES */
-.btn-warning {
-    font-weight: 600;
-}
-
-/* LINKS */
-a {
-    text-decoration: none;
+/* Quita márgenes molestos */
+.main-content {
+    padding: 0;
+    margin: 0;
 }
