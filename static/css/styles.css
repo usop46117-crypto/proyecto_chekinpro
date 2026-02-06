@@ -1,5 +1,5 @@
-/* ===== FONDO HOTEL (COMO LA IMAGEN) ===== */
 .base-bg {
+    position: relative;
     background-image: url("../img/hotel.jpg");
     background-size: cover;
     background-position: center;
@@ -7,25 +7,24 @@
     background-attachment: fixed;
 }
 
-/* Capa azul suave como la referencia */
 .base-bg::before {
     content: "";
     position: fixed;
     inset: 0;
     background: rgba(0, 80, 160, 0.35);
-    z-index: -1;
+    z-index: 0;
 }
 
-/* Todo el contenido encima del fondo */
+/* Todo el contenido por encima del fondo */
 header,
 main,
 footer {
     position: relative;
-    z-index: 2;
+    z-index: 1;
 }
 
-/* Quita márgenes molestos */
 .main-content {
-    padding: 0;
-    margin: 0;
+    flex: 1;
+    background-color: rgba(58, 63, 68, 0.9);
+    min-height: 80%;
 }
