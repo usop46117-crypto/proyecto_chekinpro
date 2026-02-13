@@ -39,10 +39,11 @@ class ReservaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Aplicar Bootstrap a todos los campos
+        # Bootstrap a todos los campos sin duplicar clases
         for field in self.fields.values():
-            if "class" not in field.widget.attrs:
-                field.widget.attrs["class"] = "form-control"
+            existing_classes = field.widget.attrs.get("class", "")
+            if "form-control" not in existing_classes:
+                field.widget.attrs["class"] = existing_classes + " form-control"
 
     def clean(self):
         cleaned = super().clean()
@@ -55,22 +56,24 @@ class ReservaForm(forms.ModelForm):
         # Validación fechas
         if entrada and salida:
             if salida <= entrada:
-                raise forms.ValidationError(
+                self.add_error(
+                    "fecha_salida",
                     "La fecha de salida debe ser mayor a la fecha de entrada."
                 )
 
             if entrada < date.today():
-                raise forms.ValidationError(
+                self.add_error(
+                    "fecha_entrada",
                     "La fecha de entrada no puede ser menor a hoy."
                 )
 
         # Validación vehículo
         if tipo_vehiculo and tipo_vehiculo != "ninguno":
             if not placa:
-                raise forms.ValidationError(
+                self.add_error(
+                    "placa",
                     "Si seleccionas vehículo, la placa es obligatoria."
                 )
 
         return cleaned
-
 
