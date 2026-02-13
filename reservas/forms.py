@@ -17,10 +17,16 @@ class ReservaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+forms-reservas1
+        # Bootstrap a TODOS los campos correctamente
+        for field in self.fields.values():
+            field.widget.attrs["class"] = "form-control"
+
         # Bootstrap para todos los campos
         for field in self.fields.values():
             existing_classes = field.widget.attrs.get("class", "")
             field.widget.attrs["class"] = existing_classes + " form-control"
+ master
 
     def clean(self):
         cleaned = super().clean()
@@ -32,6 +38,20 @@ class ReservaForm(forms.ModelForm):
 
         if entrada and salida:
             if salida <= entrada:
+ forms-reservas1
+                raise forms.ValidationError(
+                    "La fecha de salida debe ser mayor a la fecha de entrada."
+                )
+            if entrada < date.today():
+                raise forms.ValidationError(
+                    "La fecha de entrada no puede ser menor a hoy."
+                )
+
+        if tipo_vehiculo and tipo_vehiculo != "ninguno":
+            if not placa:
+                raise forms.ValidationError(
+                    "Si seleccionas vehículo, la placa es obligatoria."
+                )
                 self.add_error("fecha_salida", "La fecha de salida debe ser mayor a la fecha de entrada.")
 
         if entrada and entrada < date.today():
@@ -39,6 +59,7 @@ class ReservaForm(forms.ModelForm):
 
         if tipo_vehiculo and not placa:
             self.add_error("placa", "Si seleccionas vehículo, la placa es obligatoria.")
+            master
 
         return cleaned
 
