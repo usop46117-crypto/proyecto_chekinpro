@@ -5,182 +5,112 @@ from django.utils import timezone
 
 
 def fecha_hoy():
-    """Default para fecha_entrada (evita preguntas en migraciones)."""
     return timezone.localdate()
 
 
 def fecha_manana():
-    """Default para fecha_salida (evita preguntas en migraciones)."""
     return timezone.localdate() + timezone.timedelta(days=1)
 
 
 class Reserva(models.Model):
-    # -------------------------
-    # Choices (TextChoices PRO)
-    # -------------------------
-    class Estado(models.TextChoices):
-        PENDIENTE = "pendiente", "Pendiente"
-        CONFIRMADA = "confirmada", "Confirmada"
-        CANCELADA = "cancelada", "Cancelada"
 
-    class TipoHabitacion(models.TextChoices):
-        INDIVIDUAL = "individual", "Individual"
-        DOBLE = "doble", "Doble"
-        SUITE = "suite", "Suite"
-        FAMILIAR = "familiar", "Familiar"
+    # ====== OPCIONES ======
+    ESTADOS = [
+        ("pendiente", "Pendiente"),
+        ("confirmada", "Confirmada"),
+        ("cancelada", "Cancelada"),
+    ]
 
-    class TipoVehiculo(models.TextChoices):
-        NINGUNO = "ninguno", "Sin vehículo"
-        CARRO = "carro", "Carro"
-        MOTO = "moto", "Moto"
-        CAMIONETA = "camioneta", "Camioneta"
+    TIPOS_HABITACION = [
+        ("individual", "Individual"),
+        ("doble", "Doble"),
+        ("suite", "Suite"),
+        ("familiar", "Familiar"),
+    ]
 
-    class MetodoPago(models.TextChoices):
-        EFECTIVO = "efectivo", "Efectivo"
-        TARJETA = "tarjeta", "Tarjeta"
-        TRANSFERENCIA = "transferencia", "Transferencia"
+    TIPOS_VEHICULO = [
+        ("ninguno", "Sin vehículo"),
+        ("carro", "Carro"),
+        ("moto", "Moto"),
+        ("camioneta", "Camioneta"),
+    ]
 
-    # -------------------------
-    # Usuario del sistema
-    # -------------------------
+    METODOS_PAGO = [
+        ("efectivo", "Efectivo"),
+        ("tarjeta", "Tarjeta"),
+        ("transferencia", "Transferencia"),
+    ]
+
+    # ====== USUARIO ======
     usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="reservas",
-        verbose_name="Creada por",
+        related_name="reservas"
     )
 
-    # -------------------------
-    # Datos del huésped (NO es usuario)
-    # -------------------------
-    nombre_huesped = models.CharField("Nombre del huésped", max_length=120)
+    # ====== HUÉSPED ======
+    nombre = models.CharField(max_length=120)
+    telefono = models.CharField(max_length=30)
+    email = models.EmailField(blank=True, null=True)
 
-    documento = models.CharField(
-        "Documento",
-        max_length=20,
-        blank=True,
-        default="",
-        help_text="Cédula / pasaporte del huésped (si no tiene, se deja vacío).",
-    )
+    # ====== FECHAS ======
+    entrada = models.DateField(default=fecha_hoy)
+    salida = models.DateField(default=fecha_manana)
 
-    telefono = models.CharField("Teléfono", max_length=30)
-
-    email = models.EmailField("Correo", blank=True, null=True)
-
-    # -------------------------
-    # Fechas
-    # -------------------------
-    fecha_entrada = models.DateField("Fecha de entrada", default=fecha_hoy)
-    fecha_salida = models.DateField("Fecha de salida", default=fecha_manana)
-
-    # -------------------------
-    # Ocupación
-    # -------------------------
-    adultos = models.PositiveSmallIntegerField("Adultos", default=1)
-    ninos = models.PositiveSmallIntegerField("Niños", default=0)
-
-    # -------------------------
-    # Habitación
-    # -------------------------
+    # ====== HABITACIÓN ======
     tipo_habitacion = models.CharField(
-        "Tipo de habitación",
         max_length=20,
-        choices=TipoHabitacion.choices,
-        default=TipoHabitacion.INDIVIDUAL,
+        choices=TIPOS_HABITACION,
+        default="individual"
     )
+    habitacion = models.CharField(max_length=10)
 
-    habitacion = models.CharField(
-        "Habitación",
-        max_length=10,
-        default="POR_ASIGNAR",
-        help_text="Ej: 101, 305, A12",
-    )
-
-    # -------------------------
-    # Vehículo
-    # -------------------------
+    # ====== VEHÍCULO ======
     tipo_vehiculo = models.CharField(
-        "Vehículo",
         max_length=20,
-        choices=TipoVehiculo.choices,
-        default=TipoVehiculo.NINGUNO,
+        choices=TIPOS_VEHICULO,
+        default="ninguno"
     )
+    placa = models.CharField(max_length=10, blank=True)
 
-    placa = models.CharField("Placa", max_length=10, blank=True, default="")
-    color_vehiculo = models.CharField("Color vehículo", max_length=30, blank=True, default="")
-
-    # -------------------------
-    # Pago
-    # -------------------------
+    # ====== PAGO ======
     metodo_pago = models.CharField(
-        "Método de pago",
         max_length=20,
-        choices=MetodoPago.choices,
-        default=MetodoPago.EFECTIVO,
+        choices=METODOS_PAGO,
+        default="efectivo"
     )
+    total = models.DecimalField(max_digits=10, decimal_places=2)
 
-    total = models.DecimalField("Total", max_digits=12, decimal_places=2, default=0)
-
-    # -------------------------
-    # Extra
-    # -------------------------
-    observaciones = models.TextField("Observaciones", blank=True, default="")
-
+    # ====== ESTADO ======
     estado = models.CharField(
-        "Estado",
         max_length=20,
-        choices=Estado.choices,
-        default=Estado.PENDIENTE,
+        choices=ESTADOS,
+        default="pendiente"
     )
 
-    creado = models.DateTimeField("Creado", auto_now_add=True)
+    creado = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Reserva"
-        verbose_name_plural = "Reservas"
         ordering = ["-creado"]
 
     def __str__(self):
-        return f"Reserva #{self.id} - {self.nombre_huesped}"
+        return f"{self.nombre} - Hab {self.habitacion}"
 
-    # -------------------------
-    # Validaciones reales
-    # -------------------------
+    # ====== VALIDACIONES ======
     def clean(self):
-        errors = {}
 
-        # Fecha salida debe ser mayor que entrada
-        if self.fecha_salida and self.fecha_entrada:
-            if self.fecha_salida <= self.fecha_entrada:
-                errors["fecha_salida"] = "La fecha de salida debe ser posterior a la fecha de entrada."
+        if self.salida <= self.entrada:
+            raise ValidationError("La fecha de salida debe ser mayor que la de entrada.")
 
-        # Adultos mínimo 1
-        if self.adultos is not None and self.adultos < 1:
-            errors["adultos"] = "Debe haber mínimo 1 adulto."
-
-        # Si hay vehículo, placa obligatoria
-        if self.tipo_vehiculo != self.TipoVehiculo.NINGUNO:
-            if not (self.placa or "").strip():
-                errors["placa"] = "La placa es obligatoria si el huésped trae vehículo."
-        else:
-            # Si no hay vehículo, limpia placa y color
-            self.placa = ""
-            self.color_vehiculo = ""
-
-        if errors:
-            raise ValidationError(errors)
+        if self.tipo_vehiculo != "ninguno" and not self.placa:
+            raise ValidationError("Debe ingresar placa si hay vehículo.")
 
     def save(self, *args, **kwargs):
-        # Garantiza validaciones al guardar desde admin / forms
         self.full_clean()
         super().save(*args, **kwargs)
 
-    @property
-    def total_personas(self):
-        return int(self.adultos or 0) + int(self.ninos or 0)
-
+    # ====== PROPIEDADES ======
     @property
     def noches(self):
-        if self.fecha_salida and self.fecha_entrada:
-            return max((self.fecha_salida - self.fecha_entrada).days, 0)
-        return 0
+        return (self.salida - self.entrada).days
+
