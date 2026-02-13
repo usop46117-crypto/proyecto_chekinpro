@@ -9,18 +9,18 @@ class ReservaForm(forms.ModelForm):
         exclude = ("usuario", "creado", "total")
 
         widgets = {
-            "fecha_entrada": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
-            "fecha_salida": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
-            "observaciones": forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
+            "fecha_entrada": forms.DateInput(attrs={"type": "date"}),
+            "fecha_salida": forms.DateInput(attrs={"type": "date"}),
+            "observaciones": forms.Textarea(attrs={"rows": 3}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # estilos bootstrap para todos los campos
-        for name, field in self.fields.items():
-            if not isinstance(field.widget, forms.Textarea):
-                field.widget.attrs.update({"class": "form-control"})
+        # Bootstrap para todos los campos
+        for field in self.fields.values():
+            existing_classes = field.widget.attrs.get("class", "")
+            field.widget.attrs["class"] = existing_classes + " form-control"
 
     def clean(self):
         cleaned = super().clean()
@@ -32,13 +32,13 @@ class ReservaForm(forms.ModelForm):
 
         if entrada and salida:
             if salida <= entrada:
-                raise forms.ValidationError("La fecha de salida debe ser mayor a la fecha de entrada.")
-            if entrada < date.today():
-                raise forms.ValidationError("La fecha de entrada no puede ser menor a hoy.")
+                self.add_error("fecha_salida", "La fecha de salida debe ser mayor a la fecha de entrada.")
 
-        # si hay vehículo, placa obligatoria
-        if tipo_vehiculo and tipo_vehiculo != "ninguno":
-            if not placa:
-                raise forms.ValidationError("Si seleccionas vehículo, la placa es obligatoria.")
+        if entrada and entrada < date.today():
+            self.add_error("fecha_entrada", "La fecha de entrada no puede ser menor a hoy.")
+
+        if tipo_vehiculo and not placa:
+            self.add_error("placa", "Si seleccionas vehículo, la placa es obligatoria.")
 
         return cleaned
+
